@@ -36,6 +36,8 @@ INSTALLED_APPS = [
     'service',
     'contact',
     'rest_framework',
+    'rest_framework.authtoken',
+
 ]
 
 MIDDLEWARE = [
