@@ -8,7 +8,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login, logout
 from rest_framework.authtoken.models import Token
 
 
@@ -70,10 +70,16 @@ class UserLoginApiView(APIView):
             user = authenticate(username=username, password=password)
             if user:
                 token,_ = Token.objects.get_or_create(user=user)
+                login(request, user)
                 return Response({'token': token.key, 'user_id': user.id})
             else:
                 return Response({'error': 'Invalid Credential'})
         return Response(serializer.errors)    
     
             
-        
+class UserLogutView(APIView):
+    def get(self, request):
+        request.user.auth_token.delete()
+        logout(request)
+        return redirect("login")
+               
